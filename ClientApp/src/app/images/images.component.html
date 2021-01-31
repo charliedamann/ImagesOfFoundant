@@ -1,17 +1,37 @@
 <nav class="navbar navbar-expand-sm bg-white mb-3 justify-content-between" style="height: 20px;">
-  <a href="#" class="nav-link text-dark" data-toggle="modal" data-target="#ModalLoginForm">Add Image</a>
-  <div>
+  <a href="#" class="nav-link text-dark" data-toggle="modal" data-target="#ModalAddImageForm">Add Image</a>
+  <div *ngIf="tags?.length > 0">
     <form class="form-inline">
-      <label class="mr-sm-2" for="tagSelect" >Filter on Tag</label>
+      <label class="mr-sm-2" for="tagSelect">Filter on Tag</label>
       <select class="form-control my-2 my-sm-0" id="tagSelects" (change)="selectTag($event);">
         <option></option>
-        <option *ngFor="let tag of tags" value="{{tag.id}}" >{{tag.name}}</option>
+        <option *ngFor="let tag of tags" value="{{tag.id}}">{{tag.name}}</option>
       </select>
     </form>
   </div>
 </nav>
 
-<div id="ModalLoginForm" class="modal fade">
+<h2>Images of Foundant</h2>
+<p>Everyone loves to show off their pictures! Here is a place for our employees to share their favorite photos with the rest of the team.
+  Just click 'Add Image' to share your photo with the Images of Foundant! </p>
+
+<div *ngIf="!images" align="center"><p><em>Loading...</em></p></div>
+
+<div class="card-deck">
+  <div *ngFor="let image of images">
+    <div class="card" style="width:250px">
+      <img class="card-img-top" src="{{image.imageUrl}}" />
+      <div class="card-body">
+        <h6 class="card-title">{{ image.title }}</h6>
+        <a href="#" (click)="selectImage(image);" data-toggle="modal" data-target="#ModalImageView" class="card-link">View</a>
+        <a href="#" class="card-link" (click)="deleteImage(image);">Delete</a>
+        <a href="#" class="card-link">Permalink</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="ModalAddImageForm" class="modal fade">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -47,33 +67,17 @@
           <div class="form-group">
             <label class="control-label">Tags</label>
             <div>
-              <input type="text" class="form-control input-lg" name="tags"  placeholder="Tag1, Tag2, Tag3" ngModel>
+              <input type="text" class="form-control input-lg" name="tags" placeholder="Tag1, Tag2, Tag3" ngModel>
             </div>
           </div>
           <div class="modal-footer">
             <div class="form-group text-right">
-              <button type="submit" class="btn btn-dark mr-2" data-toggle="modal" data-target="#ModalLoginForm">Upload</button>
+              <button type="submit" class="btn btn-dark mr-2" data-toggle="modal" data-target="#ModalAddImageForm">Upload</button>
               <button class="btn btn-dark" data-dismiss="modal">Cancel</button>
             </div>
           </div>
         </form>
       </div>
-    </div>
-  </div>
-</div>
-
-<div *ngIf="!images" align="center"><p><em>Loading...</em></p></div>
-
-<div class="card-deck">
-  <div *ngFor="let image of images">
-    <div class="card" style="width:250px">
-      <img class="card-img-top" src="{{image.imageUrl}}" />
-      <div class="card-body">
-        <h6 class="card-title">{{ image.title }}</h6>
-        <a href="#" (click)="selectImage(image);" data-toggle="modal" data-target="#ModalImageView" class="card-link">View</a>
-        <a href="#"class="card-link" (click)="deleteImage(image);">Delete</a>
-        <a href="#" class="card-link">Permalink</a>
-     </div>
     </div>
   </div>
 </div>
@@ -94,14 +98,14 @@
                 {{tag.name}}
               </div>
             </div>
-            </div>
           </div>
-          <div class="modal-footer">
-            <div class="form-group text-right">
-              <button class="btn btn-dark" data-dismiss="modal">Close</button>
-            </div>
+        </div>
+        <div class="modal-footer">
+          <div class="form-group text-right">
+            <button class="btn btn-dark" data-dismiss="modal">Close</button>
           </div>
         </div>
       </div>
     </div>
+  </div>
 </div>

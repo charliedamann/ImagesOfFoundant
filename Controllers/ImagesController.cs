@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using ImagesOfFoundant.Models;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -48,17 +47,27 @@ namespace ImagesOfFoundant.Controllers
         public async Task<ActionResult<Image>> PostImage(Image image)
         {
             image.ImageUrl = "images/" + image.ImageUrl;
+
+            // Check for existing tags
+            for(int i = 0; i < image.Tags.Count; i++)
+            {
+                var newTag = _context.Tags.FirstOrDefault(t => t.Name == image.Tags[i].Name);
+                if(null != newTag)
+                {
+                    image.Tags[i] = newTag;
+                }
+            }
+
             _context.Images.Add(image); 
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetImage", new { id = image.Id }, image);
+            return image;
         }              
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Image>>> GetImages()
         {
             return await _context.Images.Include(i=>i.Tags).ToListAsync();
-            //return await _context.Images.ToListAsync();
         }
 
         [HttpDelete("{id}")]

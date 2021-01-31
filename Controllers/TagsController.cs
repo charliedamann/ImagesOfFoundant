@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using ImagesOfFoundant.Models;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using System.IO;
 
 namespace ImagesOfFoundant.Controllers
 {
