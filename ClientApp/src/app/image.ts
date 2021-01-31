@@ -9,4 +9,5 @@ export interface Image {
 export interface Tag {
   id: number;
   name: string;
+  images: Image[];
 }

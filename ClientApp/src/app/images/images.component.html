@@ -3,9 +3,9 @@
   <div>
     <form class="form-inline">
       <label class="mr-sm-2" for="tagSelect" >Filter on Tag</label>
-      <select class="form-control my-2 my-sm-0" id="tagSelects">
+      <select class="form-control my-2 my-sm-0" id="tagSelects" (change)="selectTag($event);">
         <option></option>
-        <option *ngFor="let image of images" >{{image.title}}</option>
+        <option *ngFor="let tag of tags" value="{{tag.id}}" >{{tag.name}}</option>
       </select>
     </form>
   </div>

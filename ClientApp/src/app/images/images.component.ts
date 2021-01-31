@@ -9,9 +9,11 @@ import { Image, Tag } from '../image';
 })
 export class ImagesComponent {
   public images: Image[];
-  //public image: Image;
+  public tags: Tag[];
   public selectedImage: Image;
+  public selectedTag: Tag;
   private imagesUrl;
+  private tagsUrl;
   public imageToUpload: File;
   selectedFile: ImageSnippet;
   postId;
@@ -23,14 +25,52 @@ export class ImagesComponent {
   constructor(
     private http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
     this.imagesUrl = baseUrl + 'images/';
+    this.tagsUrl = baseUrl + 'tags/';
     this.getImages();
+    this.getTags();
   }
 
-  getImages() {
+  public getImages() {
     this.http.get<Image[]>(this.imagesUrl).subscribe(result => {
       this.images = result;
     }, error => console.error(error));
   }
+
+  public addImage(title: string, description: string, imageUrl: string, tags: string): Observable<any> {
+
+    let tagArray = [];
+    var tagStringArray = tags.split(",");
+    tagStringArray.forEach(function (tagString) {
+      tagArray.push({ name: tagString });
+    });
+
+    return this.http.post<Image>(this.imagesUrl, { title: title, description: description, imageUrl: imageUrl, tags: tagArray }, this.httpOptions);
+  }
+
+  deleteImage(image) {
+    this.http.delete<any>(this.imagesUrl + image.id, this.httpOptions).subscribe(
+      () => {
+        this.getImages();
+        this.getTags();
+      })
+  }  
+
+  getTags() {
+    this.http.get<Tag[]>(this.tagsUrl).subscribe(result => {
+      this.tags = result;
+    }, error => console.error(error));
+  }
+
+  selectTag(event) {
+    // This could be way more efficient, just need access to the images of the selected tag
+    var tag = this.tags.find(e => e.id === Number(event.target.value));
+    if (tag) {
+      this.images = tag.images;
+    }
+    else {
+      this.getImages();
+    }    
+  } 
 
   onClickSubmit(data) {
       const reader = new FileReader();
@@ -42,6 +82,7 @@ export class ImagesComponent {
             this.addImage(data.title, data.description, this.imageToUpload.name, data.tags).subscribe(
               () => {
                 this.getImages();
+                this.getTags();
               }
             )
           },
@@ -62,29 +103,11 @@ export class ImagesComponent {
     const formData = new FormData();
     formData.append('image', image);
     return this.http.post(this.imagesUrl + 'UploadFile', formData);
-  }
-    
-  public addImage(title: string, description: string, imageUrl: string, tags: string): Observable<any> {
-
-    let tagArray = [];  
-    var tagStringArray = tags.split(",");
-    tagStringArray.forEach(function (tagString) {
-      tagArray.push({ name: tagString });
-    }); 
-
-    return this.http.post<Image>(this.imagesUrl, { title: title, description: description, imageUrl: imageUrl, tags: tagArray }, this.httpOptions);
-  }
+  }  
 
   selectImage(image) {
     this.selectedImage = image;
   } 
-
-  deleteImage(image) {
-    this.http.delete<any>(this.imagesUrl + image.id, this.httpOptions).subscribe(
-      ()=>{
-        this.getImages();
-      })
-  }  
 }
 
 class ImageSnippet {
