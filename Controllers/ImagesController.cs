@@ -73,7 +73,7 @@ namespace ImagesOfFoundant.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Image>> DeleteImage(long id)
         {
-            var image = await _context.Images.FindAsync(id);
+            var image = _context.Images.Include(i => i.Tags).First(i => i.Id == id);
             if (image == null)
             {
                 return NotFound();
@@ -82,6 +82,13 @@ namespace ImagesOfFoundant.Controllers
             _context.Images.Remove(image);
             await _context.SaveChangesAsync();
 
+            // Remove Orphaned Tags 
+            var tags = await _context.Tags.Include(i => i.Images).ToListAsync();
+            var orphanTags = tags.Where(t=> t.Images == null || t.Images.Count == 0);
+            _context.Tags.RemoveRange(orphanTags);
+            await _context.SaveChangesAsync();
+
+            // Remove Saved Image
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\", image.ImageUrl);
             FileInfo imageFile = new FileInfo(filePath);
             imageFile.Delete();

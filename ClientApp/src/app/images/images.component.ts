@@ -41,7 +41,7 @@ export class ImagesComponent {
     let tagArray = [];
     var tagStringArray = tags.split(",");
     tagStringArray.forEach(function (tagString) {
-      tagArray.push({ name: tagString });
+      tagArray.push({ name: tagString.trim() });
     });
 
     return this.http.post<Image>(this.imagesUrl, { title: title, description: description, imageUrl: imageUrl, tags: tagArray }, this.httpOptions);
