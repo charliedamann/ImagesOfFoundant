@@ -25,10 +25,11 @@ namespace ImagesOfFoundant
                 AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
-            //services.AddDbContext<ImageSharingContext>(opt =>
-            //    opt.UseInMemoryDatabase("FoundantImages"));
+            services.AddDbContext<ImageSharingContext>(opt =>
+                opt.UseInMemoryDatabase("FoundantImages"));
 
-            services.AddDbContext<ImageSharingContext>(options => options.UseSqlServer("Server=.\\SQLExpress;Database=FoundantImages;Integrated Security=True"));
+            //services.AddDbContext<ImageSharingContext>(options => 
+            //    options.UseSqlServer("Server=.\\SQLExpress;Database=FoundantImages;Integrated Security=True"));
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
