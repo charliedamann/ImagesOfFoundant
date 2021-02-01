@@ -5,8 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
 using ImagesOfFoundant.Models;
+using System.IO;
 
 namespace ImagesOfFoundant
 {
@@ -48,6 +48,8 @@ namespace ImagesOfFoundant
             {
                 app.UseExceptionHandler("/Error");
             }
+
+            Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\images"));
 
             app.UseStaticFiles();
             if (!env.IsDevelopment())
